@@ -36,7 +36,7 @@ class Exercise {
     return results.rows[0];
   }
 
-  static async lookupExerciseById({ user, exerciseId }) {
+  static async lookupExerciseById({ user }, exerciseId) {
     // lookup a specific exercise if it exists
     const results = await db.query(
       `
@@ -49,17 +49,18 @@ class Exercise {
                 u.email AS "userEmail"
         FROM exercises AS e
             JOIN users AS u ON u.id = e.user_id
-        WHERE e.id = $1 
+        WHERE e.id = $1 AND u.email = $2
         `,
-      [exerciseId]
+      [exerciseId, user.email]
     );
+    // console.log("RESULTS", results.rows[0]);
     const exercise = results.rows[0];
     if (!exercise) {
       throw new NotFoundError();
     }
     return exercise;
   }
-  static async listAllExercise() {
+  static async listAllExercise({ user }) {
     // show all existing exercise logged in desc order of when they were created
     const results = await db.query(
       `
@@ -69,11 +70,14 @@ class Exercise {
                 e.duration, 
                 e.intensity, 
                 e.user_id AS "userId",
+                e.timestamp, 
                 u.email AS "userEmail"
         FROM exercises AS e
             JOIN users AS u ON u.id = e.user_id
+            WHERE u.email = $1
         ORDER BY e.timestamp DESC 
-        `
+        `,
+      [user.email]
     );
     return results.rows;
   }

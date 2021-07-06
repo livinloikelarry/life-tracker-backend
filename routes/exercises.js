@@ -16,10 +16,11 @@ router.post("/", security.requireAuthenticatedUser, async (req, res, next) => {
   }
 });
 
-router.get("/", async (req, res, next) => {
+router.get("/", security.requireAuthenticatedUser, async (req, res, next) => {
   try {
+    const { user } = res.locals;
     // show all previously added exercises
-    const exercises = await Exercise.listAllExercise();
+    const exercises = await Exercise.listAllExercise({ user });
     return res.status(200).json({ exercises });
   } catch (err) {
     next(err);
@@ -29,8 +30,10 @@ router.get("/", async (req, res, next) => {
 router.get("/:exerciseId", async (req, res, next) => {
   try {
     // look up a single exercise by id
+    const { user } = res.locals;
     const { exerciseId } = req.params;
-    const exercise = await Exercise.lookupExerciseById(exerciseId);
+    console.log("EXERCISE ID IS", exerciseId);
+    const exercise = await Exercise.lookupExerciseById({ user }, exerciseId);
     return res.status(200).json({ exercise });
   } catch (err) {
     next(err);

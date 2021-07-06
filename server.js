@@ -25,8 +25,12 @@ app.use(morgan("tiny"));
 // if it does attach the decoded user to res.locals
 app.use(security.extractUserFromJwt);
 
+// set routes!
 app.use("/auth", authRoutes);
 app.use("/exercises", exerciseRoutes);
+// app.use("/nutrition", nutritionRoutes);
+// app.use("/sleep", sleepRoutes);
+// app.use("/users", userRoute);
 
 /** Handle 404 errors -- this matches everything */
 app.use((req, res, next) => {
