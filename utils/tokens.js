@@ -12,7 +12,7 @@ const createUserJwt = (user) => {
 };
 
 const generateToken = (data) =>
-  jwt.sign(data, SECRET_KEY, { expiresIn: "24h" });
+  jwt.sign(data, SECRET_KEY, { expiresIn: "48h" });
 const validatedToken = (token) => {
   try {
     const decoded = jwt.verify(token, SECRET_KEY);

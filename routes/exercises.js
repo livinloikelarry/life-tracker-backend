@@ -16,9 +16,10 @@ router.post("/", security.requireAuthenticatedUser, async (req, res, next) => {
   }
 });
 
-router.get("/", security.requireAuthenticatedUser, async (req, res, next) => {
+router.get("/", async (req, res, next) => {
   try {
     const { user } = res.locals;
+    console.log("the user is ", user);
     // show all previously added exercises
     const exercises = await Exercise.listAllExercise({ user });
     return res.status(200).json({ exercises });
